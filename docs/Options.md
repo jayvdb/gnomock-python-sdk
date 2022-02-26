@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **cmd** | **list[str]** | Command and its arguments to execute on container startup. | [optional] 
 **disable_cleanup** | **bool** | Disables auto removal of this container after tests. | [optional] 
 **use_local_images_first** | **bool** | If possible to avoid hitting the Docker Hub pull rate limit. | [optional] 
+**custom_named_ports** | **dict(str, object)** | A map of port bindings of a Gnomock container. Human readable names are used to make the values readable. &#x60;port&#x60; value is an actual port exposed on the host; use this port to connect to the container.  | [optional] 
 **auth** | **str** | base64 encoded JSON string with docker access credentials. JSON string should include two fields, username and password. For Docker Hub, if 2FA authentication is enabled, an access token should be used instead of a password.  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

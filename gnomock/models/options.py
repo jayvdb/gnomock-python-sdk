@@ -41,6 +41,7 @@ class Options(object):
         'cmd': 'list[str]',
         'disable_cleanup': 'bool',
         'use_local_images_first': 'bool',
+        'custom_named_ports': 'dict(str, object)',
         'auth': 'str'
     }
 
@@ -53,10 +54,11 @@ class Options(object):
         'cmd': 'cmd',
         'disable_cleanup': 'disable_cleanup',
         'use_local_images_first': 'use_local_images_first',
+        'custom_named_ports': 'custom_named_ports',
         'auth': 'auth'
     }
 
-    def __init__(self, timeout=None, env=None, debug=False, container_name=None, privileged=None, cmd=None, disable_cleanup=None, use_local_images_first=None, auth=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, timeout=None, env=None, debug=False, container_name=None, privileged=None, cmd=None, disable_cleanup=None, use_local_images_first=None, custom_named_ports=None, auth=None, local_vars_configuration=None):  # noqa: E501
         """Options - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -70,6 +72,7 @@ class Options(object):
         self._cmd = None
         self._disable_cleanup = None
         self._use_local_images_first = None
+        self._custom_named_ports = None
         self._auth = None
         self.discriminator = None
 
@@ -89,6 +92,8 @@ class Options(object):
             self.disable_cleanup = disable_cleanup
         if use_local_images_first is not None:
             self.use_local_images_first = use_local_images_first
+        if custom_named_ports is not None:
+            self.custom_named_ports = custom_named_ports
         if auth is not None:
             self.auth = auth
 
@@ -275,6 +280,29 @@ class Options(object):
         """
 
         self._use_local_images_first = use_local_images_first
+
+    @property
+    def custom_named_ports(self):
+        """Gets the custom_named_ports of this Options.  # noqa: E501
+
+        A map of port bindings of a Gnomock container. Human readable names are used to make the values readable. `port` value is an actual port exposed on the host; use this port to connect to the container.   # noqa: E501
+
+        :return: The custom_named_ports of this Options.  # noqa: E501
+        :rtype: dict(str, object)
+        """
+        return self._custom_named_ports
+
+    @custom_named_ports.setter
+    def custom_named_ports(self, custom_named_ports):
+        """Sets the custom_named_ports of this Options.
+
+        A map of port bindings of a Gnomock container. Human readable names are used to make the values readable. `port` value is an actual port exposed on the host; use this port to connect to the container.   # noqa: E501
+
+        :param custom_named_ports: The custom_named_ports of this Options.  # noqa: E501
+        :type: dict(str, object)
+        """
+
+        self._custom_named_ports = custom_named_ports
 
     @property
     def auth(self):
