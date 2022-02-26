@@ -11,7 +11,7 @@ For more information, please visit [https://github.com/orlangure/gnomock/](https
 
 ## Requirements.
 
-Python 2.7 and 3.4+
+Python >=3.6
 
 ## Installation & Usage
 ### pip install
@@ -47,13 +47,33 @@ import gnomock
 Please follow the [installation procedure](#installation--usage) and then run the following:
 
 ```python
-from __future__ import print_function
 
 import time
 import gnomock
-from gnomock.rest import ApiException
 from pprint import pprint
-
+from gnomock.api import presets_api
+from gnomock.model.cassandra_request import CassandraRequest
+from gnomock.model.cockroachdb_request import CockroachdbRequest
+from gnomock.model.container import Container
+from gnomock.model.elastic_request import ElasticRequest
+from gnomock.model.influxdb_request import InfluxdbRequest
+from gnomock.model.invalid_start_request import InvalidStartRequest
+from gnomock.model.invalid_stop_request import InvalidStopRequest
+from gnomock.model.kafka_request import KafkaRequest
+from gnomock.model.kubernetes_request import KubernetesRequest
+from gnomock.model.localstack_request import LocalstackRequest
+from gnomock.model.mariadb_request import MariadbRequest
+from gnomock.model.memcached_request import MemcachedRequest
+from gnomock.model.mongo_request import MongoRequest
+from gnomock.model.mssql_request import MssqlRequest
+from gnomock.model.mysql_request import MysqlRequest
+from gnomock.model.postgres_request import PostgresRequest
+from gnomock.model.rabbitmq_request import RabbitmqRequest
+from gnomock.model.redis_request import RedisRequest
+from gnomock.model.splunk_request import SplunkRequest
+from gnomock.model.start_failed import StartFailed
+from gnomock.model.stop_failed import StopFailed
+from gnomock.model.stop_request import StopRequest
 # Defining the host is optional and defaults to http://127.0.0.1:23042
 # See configuration.py for a list of all supported configuration parameters.
 configuration = gnomock.Configuration(
@@ -65,16 +85,40 @@ configuration = gnomock.Configuration(
 # Enter a context with an instance of the API client
 with gnomock.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = gnomock.PresetsApi(api_client)
-    cassandra_request = gnomock.CassandraRequest() # CassandraRequest | 
+    api_instance = presets_api.PresetsApi(api_client)
+    cassandra_request = CassandraRequest(
+        preset=Cassandra(
+            version="latest",
+        ),
+        options=Options(
+            timeout=60000000000,
+            env=[
+                "ENV_VAR_NAME=some-value",
+            ],
+            debug=False,
+            container_name="gnomock",
+            privileged=True,
+            cmd=[
+                "cmd_example",
+            ],
+            disable_cleanup=True,
+            use_local_images_first=True,
+            custom_named_ports=NamedPorts(
+                key={
+                    protocol="tcp",
+                    port=35973,
+                },
+            ),
+            auth="eyJ1c2VybmFtZSI6ImZvbyIsInBhc3N3b3JkIjoiYmFyIn0K",
+        ),
+    ) # CassandraRequest | 
 
     try:
         # Start a new Gnomock Cassandra preset.
         api_response = api_instance.start_cassandra(cassandra_request)
         pprint(api_response)
-    except ApiException as e:
+    except gnomock.ApiException as e:
         print("Exception when calling PresetsApi->start_cassandra: %s\n" % e)
-    
 ```
 
 ## Documentation for API Endpoints
@@ -132,6 +176,7 @@ Class | Method | HTTP request | Description
  - [MssqlRequest](docs/MssqlRequest.md)
  - [Mysql](docs/Mysql.md)
  - [MysqlRequest](docs/MysqlRequest.md)
+ - [NamedPorts](docs/NamedPorts.md)
  - [Options](docs/Options.md)
  - [Postgres](docs/Postgres.md)
  - [PostgresRequest](docs/PostgresRequest.md)
@@ -156,4 +201,23 @@ Class | Method | HTTP request | Description
 
 
 
+
+## Notes for Large OpenAPI documents
+If the OpenAPI document is large, imports in gnomock.apis and gnomock.models may fail with a
+RecursionError indicating the maximum recursion limit has been exceeded. In that case, there are a couple of solutions:
+
+Solution 1:
+Use specific imports for apis and models like:
+- `from gnomock.api.default_api import DefaultApi`
+- `from gnomock.model.pet import Pet`
+
+Solution 2:
+Before importing the package, adjust the maximum recursion limit as shown below:
+```
+import sys
+sys.setrecursionlimit(1500)
+import gnomock
+from gnomock.apis import *
+from gnomock.models import *
+```
 
